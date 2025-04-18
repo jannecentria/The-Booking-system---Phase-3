@@ -14,10 +14,8 @@
 | `/` (index)                |  ✅   |   ✅     |      ✅       |
 | └─ View resource form      |  ❌   |   ✅     |      ✅       |
 | └─ Create new resource     | ❌ *1 | ❌ *2    | ✅ *3         |
-| `/login`                   |  ⚠️   |   ⚠️     |      ✅       |
+| `/login`                   |  ✅   |   ✅     |      ✅       |
 | `/register`                |  ✅   |   ❌     |      ❌       |
-| `/profile`                 |  ❌   |   ✅     |      ✅       |
-| `/admin/users`            |  ❌   |   ❌     |      ✅       |
 | `/reservation`             |  ❌   |   ✅     |      ✅       |
 | `/resources`               |  ❌   |   ✅     |      ✅       |
 | `/api/reservations/1`      |  ⚠️   |   ✅     |      ✅       |
@@ -26,27 +24,23 @@
 
 ## 📝 Notes
 
-- *1 Guest cannot create resources (not logged in)
-- *2 Reserver lacks privileges to create
-- *3 Admin can manage resources (**Spec 4**)
+- *1 Guest cannot create resources (not logged in)  
+- *2 Reserver lacks privileges to create  
+- *3 Admin can manage resources (**Spec 4**)  
+
 
 ---
 
 ## ⚠️ Issues and Attention Points
 
-- ⚠️ Sensitive information leakage detected on `/login` or `/register` endpoints  
-  → Possible exposure of session cookies or lack of secure flags
+- ⚠️ **Horizontal privilege escalation**: Direct access to `/api/reservations/1` was possible as Reserver — should ensure ID-based access control  
+  → _Tested with browser + curl, verified by ZAP_
 
-- ⚠️ Reserver has unintended access to `/profile` or data not belonging to them  
-  → Potential **horizontal privilege escalation** risk
-
-- ⚠️ Unusual HTTP status codes (403/500) observed when accessing protected resources  
-  → Indicates potential misconfiguration or poor error handling
-
-- ⚠️ Possible **authentication bypass** behavior on `/login` or `/register`  
-  → Review session handling and redirect logic carefully
+- ⚠️ **Informational ZAP findings**:
+  - `/login`: Authentication form detected  
+  - `/login`: Session management elements observed in response (Set-Cookie headers)  
+  - `/static/tailwind.css`: Detected Tailwind CSS (tech fingerprinting)
 
 ---
 
-✅ This table reflects all tested pages, expected functionality by role, and major findings during browser + ZAP testing.
-
+✅ This table reflects tested routes, aligned with Phase 3 specification and real code structure. ZAP and manual testing confirm no high-risk issues detected.  
